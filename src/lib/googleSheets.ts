@@ -1,5 +1,7 @@
 import { google } from 'googleapis'
 
+console.log("process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'):", process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'))
+console.log("process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL:", process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL)
 const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -39,6 +41,7 @@ export const getSheetsData = async (sheetId?: string) => {
 
     const sheets = google.sheets({ version: 'v4', auth })
     let range = "Tareas!A:Z"
+    console.log("process.env.GOOGLE_SHEETS_ID:", process.env.GOOGLE_SHEETS_ID)
     const sheetTitle = await getSheetTitleById(sheets, process.env.GOOGLE_SHEETS_ID as string, sheetId || "0");
     if (sheetTitle) {
         range = `${sheetTitle}!A:Z`;
