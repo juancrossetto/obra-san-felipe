@@ -4,6 +4,10 @@ import { Expense } from '@/types';
 const EXPENSES_TAB_ID = "1103610429"
 // Agregar un gasto
 export const addExpense = async (expense: Expense) => {
+
+  const images = Array.isArray(expense.images)
+    ? expense.images.join(", ")
+    : "";
   const values = [
     [
       expense.date,
@@ -12,7 +16,7 @@ export const addExpense = async (expense: Expense) => {
       expense.category,
       expense.supplier,
       expense.paid ? 'SI' : 'NO',
-      expense.images
+      images
     ],
   ];
 
@@ -41,7 +45,7 @@ export const updateExpense = async (rowIndex: number, updatedExpense: Expense) =
       updatedExpense.description,
       updatedExpense.category,
       updatedExpense.supplier,
-      updatedExpense.paid ? 'SI' : 'NO',,
+      updatedExpense.paid ? 'SI' : 'NO', ,
       updatedExpense.images
     ],
   ];

@@ -8,14 +8,6 @@ import SupplierDebts from "@/components/SupplierDebts";
 import InstallmentPayments from "@/components/InstallmentPayments";
 
 export default async function Home() {
-	console.log(
-		"process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'):",
-		process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n")
-	);
-	console.log(
-		"process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL:",
-		process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL
-	);
 	return (
 		<div className='container mx-auto px-4 py-8'>
 			<h1 className='text-4xl font-bold mb-8'>

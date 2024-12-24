@@ -63,20 +63,44 @@ export default function ExpenseForm() {
 		setImages((prevImages) => prevImages.filter((_, i) => i !== index));
 	};
 
+	const handleUploadImage = async () => {
+		// Subir imágenes a S3 y obtener sus URLs
+		const uploadedImages = await Promise.all(
+			images.map(async (file) => {
+				const formData = new FormData();
+				formData.append("file", file);
+
+				const response = await fetch("/api/s3-upload", {
+					method: "POST",
+					body: formData,
+				});
+
+				if (!response.ok) throw new Error("Error uploading image");
+
+				const { fileName } = await response.json();
+				const baseUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com`
+				return `${baseUrl}/${fileName}`;
+			})
+		);
+		return uploadedImages
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsAdding(true);
-
-		const newExpense = {
-			amount: parseFloat(amount.replace(/\./g, "").replace(/,/g, ".")),
-			category,
-			description,
-			supplier,
-			paid,
-			date: new Date().toISOString().split("T")[0], // Fecha actual en formato YYYY-MM-DD
-		};
-
 		try {
+			const uploadedImages = await handleUploadImage();
+			console.log("uploadedImages:", uploadedImages)
+			const newExpense = {
+				amount: parseFloat(amount.replace(/\./g, "").replace(/,/g, ".")),
+				category,
+				description,
+				supplier,
+				paid,
+				date: new Date().toISOString().split("T")[0],
+				images: uploadedImages,
+			};
+
 			const response = await fetch("/api/expenses", {
 				method: "POST",
 				headers: {

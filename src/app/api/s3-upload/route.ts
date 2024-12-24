@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 // import { addInstallment, updateInstallment, deleteInstallment } from '@/lib/installments'; // Usa la lógica centralizada
 // import { getSheetsData } from '@/lib/googleSheets';
 
@@ -17,7 +17,7 @@ async function uploadFileToS3(file: any, fileName: string) {
 	console.log(fileName);
 
 	const params = {
-		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
 		Key: `${fileName}`,
 		Body: fileBuffer,
 		ContentType: "image/jpg"
@@ -54,3 +54,26 @@ export async function POST(request: Request) {
 		return NextResponse.json({ error });
 	}
 }
+
+export async function DELETE(request: Request) {
+	try {
+	  const { fileName } = await request.json();
+  
+	  if (!fileName) {
+		return NextResponse.json({ error: "File name is required." }, { status: 400 });
+	  }
+  
+	  const params = {
+		Bucket: process.env.AWS_S3_BUCKET_NAME,
+		Key: fileName,
+	  };
+  
+	  const command = new DeleteObjectCommand(params);
+	  await s3Client.send(command);
+  
+	  return NextResponse.json({ success: true });
+	} catch (error) {
+	  console.error("Error deleting file from S3:", error);
+	  return NextResponse.json({ error: "Failed to delete file." }, { status: 500 });
+	}
+  }

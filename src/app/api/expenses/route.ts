@@ -15,7 +15,7 @@ export async function GET() {
       amount: parseFloat(expense.Monto.replace(/\./g, '').replace(/,/g, '.')),
       supplier: expense.Proveedor,
       paid: expense.Pagado === 'SI', // Convertir "SI" o "NO" a booleano,
-      images: expense.Imagenes
+      images: expense.Imagenes ? expense.Imagenes.split(",").map((url: string) => url.trim()) : [],
     }))
     return NextResponse.json(formattedExpenses)
   } catch (error) {
