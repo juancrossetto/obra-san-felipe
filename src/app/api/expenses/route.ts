@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { addExpense, updateExpense, deleteExpense } from '@/lib/expenses'; // Usa la lógica centralizada
 import { getSheetsData } from '@/lib/googleSheets';
 
-export const EXPENSES_TAB_ID = "1103610429"
+const EXPENSES_TAB_ID = "1103610429"
 export async function GET() {
   try {
     const rawExpenses = await getSheetsData(EXPENSES_TAB_ID); // Trae los datos desde la hoja

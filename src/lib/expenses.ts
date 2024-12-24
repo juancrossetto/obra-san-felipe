@@ -1,7 +1,7 @@
-import { EXPENSES_TAB_ID } from '@/app/api/expenses/route';
 import { sheets, SPREADSHEET_ID } from '@/lib/googleSheets';
 import { Expense } from '@/types';
 
+const EXPENSES_TAB_ID = "1103610429"
 // Agregar un gasto
 export const addExpense = async (expense: Expense) => {
   const values = [
