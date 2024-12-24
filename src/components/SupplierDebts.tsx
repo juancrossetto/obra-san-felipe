@@ -16,11 +16,6 @@ import { Skeleton } from "./ui/skeleton";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-interface SupplierDebt {
-	supplier: string;
-	amount: number;
-}
-
 export default function SupplierDebts() {
 	const {
 		data: expenses,

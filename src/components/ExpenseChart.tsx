@@ -7,7 +7,6 @@ import {
 	Pie,
 	Cell,
 	ResponsiveContainer,
-	Legend,
 	Tooltip,
 	Sector,
 } from "recharts";

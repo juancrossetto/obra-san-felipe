@@ -56,7 +56,6 @@ export default function ExpenseList() {
 		mutate,
 		isLoading,
 	} = useSWR<Expense[]>("/api/expenses", fetcher);
-	const [expenseToDelete, setExpenseToDelete] = useState<number | null>(null);
 	const [expenseToEdit, setExpenseToEdit] = useState<EditableExpense | null>(
 		null
 	);
@@ -82,7 +81,6 @@ export default function ExpenseList() {
 				}),
 			});
 			mutate(); // Refresca los datos después de eliminar
-			setExpenseToDelete(null);
 		} catch (error) {
 			console.error("Error deleting expense:", error);
 		} finally {
@@ -267,7 +265,7 @@ export default function ExpenseList() {
 												<Button
 													variant='secondary'
 													size='sm'
-													onClick={() => setExpenseToDelete(expense.id)}
+													onClick={() => {}}
 												>
 													Eliminar
 												</Button>
@@ -283,7 +281,7 @@ export default function ExpenseList() {
 												<DialogFooter>
 													<Button
 														variant='outline'
-														onClick={() => setExpenseToDelete(null)}
+														onClick={() =>{}}
 													>
 														Cancelar
 													</Button>

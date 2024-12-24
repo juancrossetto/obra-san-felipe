@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Table,
@@ -19,8 +18,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function InstallmentPayments() {
 	const {
 		data: payments,
-		error,
-		mutate,
         isLoading,
 	} = useSWR<Installment[]>("/api/installments", fetcher);
 	const total = payments?.reduce((sum, payment) => sum + payment.amount, 0);
