@@ -12,6 +12,7 @@ export const addExpense = async (expense: Expense) => {
       expense.category,
       expense.supplier,
       expense.paid ? 'SI' : 'NO',
+      expense.images
     ],
   ];
 
@@ -33,7 +34,6 @@ export const addExpense = async (expense: Expense) => {
 // Modificar un gasto
 export const updateExpense = async (rowIndex: number, updatedExpense: Expense) => {
   const range = `Gastos!A${rowIndex}:F${rowIndex}`;
-  console.log("updatedExpense", updatedExpense, rowIndex)
   const values = [
     [
       updatedExpense.date,
@@ -41,9 +41,11 @@ export const updateExpense = async (rowIndex: number, updatedExpense: Expense) =
       updatedExpense.description,
       updatedExpense.category,
       updatedExpense.supplier,
-      updatedExpense.paid ? 'SI' : 'NO',
+      updatedExpense.paid ? 'SI' : 'NO',,
+      updatedExpense.images
     ],
   ];
+  console.log("updatedExpense", values)
 
   try {
     await sheets.spreadsheets.values.update({
