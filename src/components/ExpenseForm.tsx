@@ -78,11 +78,11 @@ export default function ExpenseForm() {
 				if (!response.ok) throw new Error("Error uploading image");
 
 				const { fileName } = await response.json();
-				const baseUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com`
+				const baseUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com`;
 				return `${baseUrl}/${fileName}`;
 			})
 		);
-		return uploadedImages
+		return uploadedImages;
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +90,7 @@ export default function ExpenseForm() {
 		setIsAdding(true);
 		try {
 			const uploadedImages = await handleUploadImage();
-			console.log("uploadedImages:", uploadedImages)
+			console.log("uploadedImages:", uploadedImages);
 			const newExpense = {
 				amount: parseFloat(amount.replace(/\./g, "").replace(/,/g, ".")),
 				category,
@@ -120,6 +120,7 @@ export default function ExpenseForm() {
 			setDescription("");
 			setSupplier("");
 			setPaid(false);
+			setImages([]);
 		} catch (error) {
 			console.error("Error adding expense:", error);
 		} finally {

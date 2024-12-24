@@ -63,6 +63,8 @@ export default function ExpenseList() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [newImages, setNewImages] = useState<File[]>([]);
+	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+	const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
 	const isLargeScreen = useMediaQuery("(min-width: 1200px)");
 	const categories: string[] = Array.from(
@@ -88,12 +90,40 @@ export default function ExpenseList() {
 		}
 	};
 
+	const handleUploadImage = async () => {
+		// Subir imágenes a S3 y obtener sus URLs
+		const uploadedImages = await Promise.all(
+			newImages.map(async (file) => {
+				const formData = new FormData();
+				formData.append("file", file);
+
+				const response = await fetch("/api/s3-upload", {
+					method: "POST",
+					body: formData,
+				});
+
+				if (!response.ok) throw new Error("Error uploading image");
+
+				const { fileName } = await response.json();
+				const baseUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com`;
+				return `${baseUrl}/${fileName}`;
+			})
+		);
+		return uploadedImages;
+	};
+
 	const handleEditSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsEditing(true);
 		if (!expenseToEdit) return;
 
 		try {
+			const uploadedImages = await handleUploadImage();
+			const updatedImages = [
+				...(expenseToEdit.images || []),
+				...uploadedImages,
+			];
+			console.log("updatedImages:", updatedImages);
 			if (newImages?.length > 0) {
 				const newImageUrls = newImages.map((image) =>
 					URL.createObjectURL(image)
@@ -108,7 +138,7 @@ export default function ExpenseList() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					rowIndex: expenseToEdit.rowIndex, // Asegúrate de que expenseToEdit tenga esta propiedad
-					updatedExpense: expenseToEdit,
+					updatedExpense: { ...expenseToEdit, images: updatedImages },
 				}),
 			});
 			mutate(); // Refresca los datos después de editar
@@ -151,6 +181,12 @@ export default function ExpenseList() {
 	const handleEdit = (expense: Expense, index: number) => {
 		setExpenseToEdit({ ...expense, rowIndex: index + 2 }); // Agrega el índice al objeto
 		setIsEditDialogOpen(true);
+	};
+
+	const handleViewImages = (images: string[]) => {
+		// setSelectedImages(images.split(",").filter(Boolean));
+		setSelectedImages(images);
+		setIsImageDialogOpen(true);
 	};
 
 	if (isLoading) {
@@ -231,7 +267,11 @@ export default function ExpenseList() {
 										<TooltipProvider>
 											<Tooltip>
 												<TooltipTrigger asChild>
-													<Button variant='outline' size='sm'>
+													<Button
+														variant='outline'
+														size='sm'
+														onClick={() => handleViewImages(expense.images)}
+													>
 														Ver {expense.images.length} imagen(es)
 													</Button>
 												</TooltipTrigger>
@@ -279,10 +319,7 @@ export default function ExpenseList() {
 													</DialogDescription>
 												</DialogHeader>
 												<DialogFooter>
-													<Button
-														variant='outline'
-														onClick={() =>{}}
-													>
+													<Button variant='outline' onClick={() => {}}>
 														Cancelar
 													</Button>
 													<Button
@@ -451,6 +488,27 @@ export default function ExpenseList() {
 							</Button>
 						</DialogFooter>
 					</form>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Imágenes del Gasto</DialogTitle>
+					</DialogHeader>
+					<div className='grid grid-cols-2 gap-4'>
+						{selectedImages.map((image, index) => (
+							<img
+								key={index}
+								src={image}
+								alt={`Imagen ${index + 1}`}
+								className='w-full h-auto object-cover rounded'
+							/>
+						))}
+					</div>
+					<DialogFooter>
+						<Button onClick={() => setIsImageDialogOpen(false)}>Cerrar</Button>
+					</DialogFooter>
 				</DialogContent>
 			</Dialog>
 		</div>
