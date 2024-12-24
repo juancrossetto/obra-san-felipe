@@ -1,18 +1,18 @@
 import { google } from 'googleapis'
 
-console.log("process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'):", process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'))
-console.log("process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL:", process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL)
+console.log("process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'):", process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'))
+console.log("process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL:", process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL)
 const auth = new google.auth.GoogleAuth({
     credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      client_email: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     },
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
   
 export const sheets = google.sheets({ version: 'v4', auth });
 
-export const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_ID;
+export const SPREADSHEET_ID = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ID;
 
 export const getSheetTitleById = async (sheets: any, spreadsheetId: string, sheetId: string) => {
     try {
@@ -33,22 +33,22 @@ export const getSheetTitleById = async (sheets: any, spreadsheetId: string, shee
 export const getSheetsData = async (sheetId?: string) => {
     const auth = new google.auth.GoogleAuth({
         credentials: {
-            client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+            client_email: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            private_key: process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
         },
         scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     })
 
     const sheets = google.sheets({ version: 'v4', auth })
     let range = "Tareas!A:Z"
-    console.log("process.env.GOOGLE_SHEETS_ID:", process.env.GOOGLE_SHEETS_ID)
-    const sheetTitle = await getSheetTitleById(sheets, process.env.GOOGLE_SHEETS_ID as string, sheetId || "0");
+    console.log("process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ID:", process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ID)
+    const sheetTitle = await getSheetTitleById(sheets, process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ID as string, sheetId || "0");
     if (sheetTitle) {
         range = `${sheetTitle}!A:Z`;
     }
     try {
         const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: process.env.GOOGLE_SHEETS_ID,
+            spreadsheetId: process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ID,
             range,
         })
         const rows = response.data.values;
