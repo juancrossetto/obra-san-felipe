@@ -23,4 +23,12 @@ export interface Installment {
     amount: number
     dueDate: string
     isPaid: boolean
+}
+
+export interface Payment {
+    id: number
+    description: string
+    paymentMethod: string
+    date: string
+    amount: number
   }

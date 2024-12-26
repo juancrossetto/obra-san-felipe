@@ -6,6 +6,7 @@ import GanttChart from "@/components/GanttChart";
 import DollarExchange from "@/components/DollarExchange";
 import SupplierDebts from "@/components/SupplierDebts";
 import InstallmentPayments from "@/components/InstallmentPayments";
+import PaymentsList from "@/components/PaymentsList";
 
 export default async function Home() {
 	return (
@@ -28,6 +29,9 @@ export default async function Home() {
 			</div>
 			<div className='mb-8'>
 				<ExpenseList />
+			</div>
+			<div className='mb-8'>
+				<PaymentsList />
 			</div>
 			<div>
 				<GanttChart />

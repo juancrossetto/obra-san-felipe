@@ -127,7 +127,6 @@ export default function ExpenseList() {
 				...(expenseToEdit.images || []),
 				...uploadedImages,
 			];
-			console.log("updatedImages:", updatedImages);
 			if (newImages?.length > 0) {
 				const newImageUrls = newImages.map((image) =>
 					URL.createObjectURL(image)
@@ -217,9 +216,13 @@ export default function ExpenseList() {
 			</div>
 			<p className='text-sm text-gray-600 mb-1'>{expense.date}</p>
 			<p className='text-sm mb-1'>{expense.description}</p>
-			<p className='text-sm mb-1'>Prov333eedor: {expense.supplier}</p>
-			<p className='text-lg font-bold mb-2'>
-				${expense.amount.toLocaleString()}
+			<p className='text-sm mb-1'>Proveedor: {expense.supplier}</p>
+			<p className='text-lg font-bold mb-2 whitespace-nowrap'>
+				$
+				{new Intl.NumberFormat("en-US", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				}).format(expense.amount)}
 			</p>
 			{expense.images && (
 				<Button
