@@ -1,5 +1,6 @@
 import { sheets, SPREADSHEET_ID } from '@/lib/googleSheets';
 import { Expense } from '@/types';
+import { capitalizeText } from './utils';
 
 const EXPENSES_TAB_ID = "1103610429"
 // Agregar un gasto
@@ -13,8 +14,8 @@ export const addExpense = async (expense: Expense) => {
       expense.date,
       expense.amount,
       expense.description,
-      expense.category,
-      expense.supplier,
+      capitalizeText(expense.category),
+      capitalizeText(expense.supplier),
       expense.paid ? 'SI' : 'NO',
       images
     ],
@@ -44,11 +45,11 @@ export const updateExpense = async (rowIndex: number, updatedExpense: Expense) =
   const range = `Gastos!A${rowIndex}:G${rowIndex}`;
   const values = [
     [
-      updatedExpense.date,
+      updatedExpense.date || 0,
       updatedExpense.amount,
       updatedExpense.description,
-      updatedExpense.category,
-      updatedExpense.supplier,
+      capitalizeText(updatedExpense.category),
+      capitalizeText(updatedExpense.supplier),
       updatedExpense.paid ? 'SI' : 'NO',
       images
     ],

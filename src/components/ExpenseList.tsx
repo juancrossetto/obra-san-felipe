@@ -40,8 +40,9 @@ import { Input } from "@/components/ui/input";
 import { Expense } from "@/types";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Skeleton } from "./ui/skeleton";
-import { X } from "lucide-react";
+import { X, ZoomIn, ZoomOut } from "lucide-react";
 import { capitalizeText } from "@/lib/utils";
+import Image from "next/image";
 
 type EditableExpense = Expense & {
 	rowIndex: number; // Añade rowIndex al tipo
@@ -56,6 +57,8 @@ export default function ExpenseList() {
 		mutate,
 		isLoading,
 	} = useSWR<Expense[]>("/api/expenses", fetcher);
+	const isDesktop = useMediaQuery("(min-width: 768px)");
+	const isLargeScreen = useMediaQuery("(min-width: 1200px)");
 	const [expenseToEdit, setExpenseToEdit] = useState<EditableExpense | null>(
 		null
 	);
@@ -65,8 +68,9 @@ export default function ExpenseList() {
 	const [newImages, setNewImages] = useState<File[]>([]);
 	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
 	const [selectedImages, setSelectedImages] = useState<string[]>([]);
+	const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+	const [zoomLevel, setZoomLevel] = useState(1);
 
-	const isLargeScreen = useMediaQuery("(min-width: 1200px)");
 	const categories: string[] = Array.from(
 		new Set(expenses?.map((e: Expense) => capitalizeText(e.category)) || [])
 	);
@@ -189,6 +193,91 @@ export default function ExpenseList() {
 		setIsImageDialogOpen(true);
 	};
 
+	const handleZoomIn = () => {
+		setZoomLevel((prev) => Math.min(prev + 0.5, 3));
+	};
+
+	const handleZoomOut = () => {
+		setZoomLevel((prev) => Math.max(prev - 0.5, 1));
+	};
+
+	const renderExpenseItem = (expense: Expense, index: number) => (
+		<div key={expense.id} className='bg-white p-4 rounded-lg shadow mb-4'>
+			<div className='flex justify-between items-center mb-2'>
+				<h3 className='text-lg font-semibold'>{expense.category}</h3>
+				<Badge
+					className={
+						expense.paid
+							? "bg-emerald-500 text-white"
+							: "bg-red-500 text-white cursor-pointer"
+					}
+				>
+					{expense.paid ? "Pagado" : "Pendiente"}
+				</Badge>
+			</div>
+			<p className='text-sm text-gray-600 mb-1'>{expense.date}</p>
+			<p className='text-sm mb-1'>{expense.description}</p>
+			<p className='text-sm mb-1'>Prov333eedor: {expense.supplier}</p>
+			<p className='text-lg font-bold mb-2'>
+				${expense.amount.toLocaleString()}
+			</p>
+			{expense.images && (
+				<Button
+					variant='outline'
+					size='sm'
+					onClick={() => handleViewImages(expense.images)}
+					className='mb-2'
+				>
+					Ver {expense.images?.length} imagen(es)
+				</Button>
+			)}
+			<div className='flex space-x-2'>
+				<Button
+					variant='outline'
+					size='sm'
+					onClick={() => handleEdit(expense, index)}
+				>
+					Editar
+				</Button>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button
+							variant='destructive'
+							size='sm'
+							onClick={() => handleDelete(expense.id)}
+						>
+							Eliminar
+						</Button>
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Confirmar eliminación</DialogTitle>
+							<DialogDescription>
+								¿Estás seguro de que quieres eliminar este gasto? Esta acción no
+								se puede deshacer.
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button
+								variant='outline'
+								// onClick={() => setExpenseToDelete(null)}
+								onClick={() => {}}
+							>
+								Cancelar
+							</Button>
+							<Button
+								variant='destructive'
+								onClick={() => handleDelete(expense.id)}
+							>
+								Eliminar
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			</div>
+		</div>
+	);
+
 	if (isLoading) {
 		return (
 			<Card>
@@ -210,135 +299,141 @@ export default function ExpenseList() {
 	return (
 		<div>
 			<h2 className='text-2xl font-bold mb-4'>Lista de Gastos</h2>
-			<div className='overflow-x-auto'>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Fecha</TableHead>
-							<TableHead>Categoría</TableHead>
-							{isLargeScreen && <TableHead>Descripción</TableHead>}
-							<TableHead>Proveedor</TableHead>
-							<TableHead>Pagado</TableHead>
-							<TableHead className='text-right'>Monto</TableHead>
-							<TableHead>Imágenes</TableHead>
-							<TableHead>Acciones</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{expenses?.map((expense, index) => (
-							<TableRow key={index}>
-								<TableCell>{expense.date}</TableCell>
-								<TableCell>
-									<TooltipProvider>
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<span>{expense.category}</span>
-											</TooltipTrigger>
-											{!isLargeScreen && (
-												<TooltipContent>
-													<p>{expense.description}</p>
-												</TooltipContent>
-											)}
-										</Tooltip>
-									</TooltipProvider>
-								</TableCell>
-								{isLargeScreen && <TableCell>{expense.description}</TableCell>}
-								<TableCell>{expense.supplier}</TableCell>
-								<TableCell>
-									<Badge
-										className={
-											expense.paid
-												? "bg-emerald-500 text-white"
-												: "bg-red-500 text-white cursor-pointer"
-										}
-									>
-										{expense.paid ? "Si" : "No"}
-									</Badge>
-								</TableCell>
-								<TableCell className='text-right whitespace-nowrap'>
-									${" "}
-									{new Intl.NumberFormat("en-US", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									}).format(expense.amount)}
-								</TableCell>
-								<TableCell>
-									{expense?.images?.length > 0 && (
+			{isDesktop ? (
+				<div className='overflow-x-auto'>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead>Fecha</TableHead>
+								<TableHead>Categoría</TableHead>
+								{isLargeScreen && <TableHead>Descripción</TableHead>}
+								<TableHead>Proveedor</TableHead>
+								<TableHead>Pagado</TableHead>
+								<TableHead className='text-right'>Monto</TableHead>
+								<TableHead>Imágenes</TableHead>
+								<TableHead>Acciones</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{expenses?.map((expense, index) => (
+								<TableRow key={index}>
+									<TableCell>{expense.date}</TableCell>
+									<TableCell>
 										<TooltipProvider>
 											<Tooltip>
 												<TooltipTrigger asChild>
-													<Button
-														variant='outline'
-														size='sm'
-														onClick={() => handleViewImages(expense.images)}
-													>
-														Ver {expense.images.length} imagen(es)
-													</Button>
+													<span>{expense.category}</span>
 												</TooltipTrigger>
-												<TooltipContent>
-													<div className='flex gap-2'>
-														{expense.images?.map((image, index) => (
-															<img
-																key={index}
-																src={image}
-																alt={`Imagen ${index + 1}`}
-																className='w-16 h-16 object-cover'
-															/>
-														))}
-													</div>
-												</TooltipContent>
+												{!isLargeScreen && (
+													<TooltipContent>
+														<p>{expense.description}</p>
+													</TooltipContent>
+												)}
 											</Tooltip>
 										</TooltipProvider>
+									</TableCell>
+									{isLargeScreen && (
+										<TableCell>{expense.description}</TableCell>
 									)}
-								</TableCell>
-								<TableCell>
-									<div className='flex space-x-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => handleEdit(expense, index)}
+									<TableCell>{expense.supplier}</TableCell>
+									<TableCell>
+										<Badge
+											className={
+												expense.paid
+													? "bg-emerald-500 text-white"
+													: "bg-red-500 text-white cursor-pointer"
+											}
 										>
-											Editar
-										</Button>
-										<Dialog>
-											<DialogTrigger asChild>
-												<Button
-													variant='secondary'
-													size='sm'
-													onClick={() => {}}
-												>
-													Eliminar
-												</Button>
-											</DialogTrigger>
-											<DialogContent>
-												<DialogHeader>
-													<DialogTitle>Confirmar eliminación</DialogTitle>
-													<DialogDescription>
-														¿Estás seguro de que quieres eliminar este gasto?
-														Esta acción no se puede deshacer.
-													</DialogDescription>
-												</DialogHeader>
-												<DialogFooter>
-													<Button variant='outline' onClick={() => {}}>
-														Cancelar
-													</Button>
+											{expense.paid ? "Si" : "No"}
+										</Badge>
+									</TableCell>
+									<TableCell className='text-right whitespace-nowrap'>
+										${" "}
+										{new Intl.NumberFormat("en-US", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										}).format(expense.amount)}
+									</TableCell>
+									<TableCell>
+										{expense?.images?.length > 0 && (
+											<TooltipProvider>
+												<Tooltip>
+													<TooltipTrigger asChild>
+														<Button
+															variant='outline'
+															size='sm'
+															onClick={() => handleViewImages(expense.images)}
+														>
+															Ver {expense.images.length} imagen(es)
+														</Button>
+													</TooltipTrigger>
+													<TooltipContent>
+														<div className='flex gap-2'>
+															{expense.images?.map((image, index) => (
+																<img
+																	key={index}
+																	src={image}
+																	alt={`Imagen ${index + 1}`}
+																	className='w-16 h-16 object-cover'
+																/>
+															))}
+														</div>
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
+										)}
+									</TableCell>
+									<TableCell>
+										<div className='flex space-x-2'>
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() => handleEdit(expense, index)}
+											>
+												Editar
+											</Button>
+											<Dialog>
+												<DialogTrigger asChild>
 													<Button
-														variant='destructive'
-														onClick={() => handleDelete(expense.id)}
-														disabled={isDeleting}
+														variant='secondary'
+														size='sm'
+														onClick={() => {}}
 													>
-														{isDeleting ? "Eliminando..." : "Eliminar"}
+														Eliminar
 													</Button>
-												</DialogFooter>
-											</DialogContent>
-										</Dialog>
-									</div>
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</div>
+												</DialogTrigger>
+												<DialogContent>
+													<DialogHeader>
+														<DialogTitle>Confirmar eliminación</DialogTitle>
+														<DialogDescription>
+															¿Estás seguro de que quieres eliminar este gasto?
+															Esta acción no se puede deshacer.
+														</DialogDescription>
+													</DialogHeader>
+													<DialogFooter>
+														<Button variant='outline' onClick={() => {}}>
+															Cancelar
+														</Button>
+														<Button
+															variant='destructive'
+															onClick={() => handleDelete(expense.id)}
+															disabled={isDeleting}
+														>
+															{isDeleting ? "Eliminando..." : "Eliminar"}
+														</Button>
+													</DialogFooter>
+												</DialogContent>
+											</Dialog>
+										</div>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</div>
+			) : (
+				<div className='space-y-4'>{expenses?.map(renderExpenseItem)}</div>
+			)}
 
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
@@ -492,18 +587,23 @@ export default function ExpenseList() {
 			</Dialog>
 
 			<Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-				<DialogContent>
+				<DialogContent className='max-w-3xl'>
 					<DialogHeader>
 						<DialogTitle>Imágenes del Gasto</DialogTitle>
 					</DialogHeader>
-					<div className='grid grid-cols-2 gap-4'>
+					<div className='grid grid-cols-2 gap-4 overflow-y-auto max-h-[60vh]'>
 						{selectedImages.map((image, index) => (
-							<img
-								key={index}
-								src={image}
-								alt={`Imagen ${index + 1}`}
-								className='w-full h-auto object-cover rounded'
-							/>
+							<div key={index} className='relative'>
+								<Image
+									src={image}
+									alt={`Imagen ${index + 1}`}
+									width={300}
+									height={300}
+									objectFit='cover'
+									className='rounded cursor-pointer'
+									onClick={() => setZoomedImage(image)}
+								/>
+							</div>
 						))}
 					</div>
 					<DialogFooter>
@@ -511,6 +611,38 @@ export default function ExpenseList() {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			{zoomedImage && (
+				<Dialog open={!!zoomedImage} onOpenChange={() => setZoomedImage(null)}>
+					<DialogContent className='max-w-5xl'>
+						<DialogHeader>
+							<DialogTitle>Imagen Ampliada</DialogTitle>
+						</DialogHeader>
+						<div
+							className='relative overflow-hidden'
+							style={{ height: "70vh" }}
+						>
+							<Image
+								src={zoomedImage}
+								alt='Imagen ampliada'
+								layout='fill'
+								objectFit='contain'
+								style={{ transform: `scale(${zoomLevel})` }}
+							/>
+						</div>
+						<DialogFooter>
+							<div className='flex items-center space-x-2'>
+								<Button onClick={handleZoomOut} disabled={zoomLevel <= 1}>
+									<ZoomOut className='mr-2 h-4 w-4' /> Alejar
+								</Button>
+								<Button onClick={handleZoomIn} disabled={zoomLevel >= 3}>
+									<ZoomIn className='mr-2 h-4 w-4' /> Acercar
+								</Button>
+							</div>
+							<Button onClick={() => setZoomedImage(null)}>Cerrar</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
 		</div>
 	);
 }

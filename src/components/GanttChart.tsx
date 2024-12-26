@@ -6,12 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { Task } from "@/types";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const Chart = dynamic(() => import("react-google-charts"), { ssr: false });
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function GanttChart() {
 	const { data: tasks, isLoading } = useSWR<Task[]>("/api/tasks", fetcher);
+	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	if (isLoading) {
 		return (
@@ -95,6 +97,30 @@ export default function GanttChart() {
 		backgroundColor: "transparent",
 	};
 
+	const renderMobileTaskList = () => (
+		<div className='space-y-4'>
+			{tasks?.map((task) => (
+				<div key={task.id} className='bg-white p-4 rounded-lg shadow'>
+					<h3 className='font-semibold mb-2'>{task.name}</h3>
+					<p className='text-sm mb-1'>Inicio: {task.startDate}</p>
+					<p className='text-sm mb-2'>Fin: {task.endDate}</p>
+					<Badge
+						variant='outline'
+						className={
+							task.status === "Pendiente"
+								? "bg-gray-200 text-gray-800"
+								: task.status === "En Proceso"
+								? "bg-blue-200 text-blue-800"
+								: "bg-green-200 text-green-800"
+						}
+					>
+						{task.status}
+					</Badge>
+				</div>
+			))}
+		</div>
+	);
+
 	return (
 		<Card className='w-full'>
 			<CardHeader>
@@ -116,13 +142,17 @@ export default function GanttChart() {
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<Chart
-					chartType='Gantt'
-					width='100%'
-					height='800px'
-					data={data}
-					options={options}
-				/>
+				{isDesktop ? (
+					<Chart
+						chartType='Gantt'
+						width='100%'
+						height='800px'
+						data={data}
+						options={options}
+					/>
+				) : (
+					renderMobileTaskList()
+				)}
 			</CardContent>
 		</Card>
 	);
