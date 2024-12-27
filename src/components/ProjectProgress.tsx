@@ -13,7 +13,7 @@ export default function ProjectProgress() {
 		: 0;
 
 	return (
-		<Card>
+		<Card className='animate-fade-in'>
 			<CardHeader>
 				<CardTitle className='text-sm font-medium'>
 					Progreso del Proyecto
