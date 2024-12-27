@@ -57,36 +57,6 @@ const translateCondition = (condition: string | undefined): string => {
 };
 
 export default function WeatherWidget() {
-  // const [weather, setWeather] = useState<WeatherData | null>(null)
-
-  // useEffect(() => {
-  //   // Simular una llamada a la API del clima
-  //   const fetchWeather = () => {
-  //     // En un escenario real, estos datos vendrían de una API de clima
-  //     const mockWeather: WeatherData = {
-  //       temperature: Math.floor(Math.random() * (35 - 15 + 1)) + 15,
-  //       condition: ['sunny', 'cloudy', 'rainy'][Math.floor(Math.random() * 3)] as 'sunny' | 'cloudy' | 'rainy'
-  //     }
-  //     setWeather(mockWeather)
-  //   }
-
-  //   fetchWeather()
-  // }, [])
-
-  // const getWeatherIcon = (condition: string) => {
-  //   switch (condition) {
-  //     case 'sunny':
-  //       return <Sun className="h-6 w-6 text-yellow-500" />
-  //     case 'cloudy':
-  //       return <Cloud className="h-6 w-6 text-gray-500" />
-  //     case 'rainy':
-  //       return <CloudRain className="h-6 w-6 text-blue-500" />
-  //     default:
-  //       return null
-  //   }
-  // }
-
-
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
