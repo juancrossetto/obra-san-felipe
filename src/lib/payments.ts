@@ -41,8 +41,6 @@ export const updatePayment = async (rowIndex: number, updatedPayment: Payment) =
         ],
     ];
 
-    console.log("updatePayment: ", values)
-
     try {
         await sheets.spreadsheets.values.update({
             spreadsheetId: SPREADSHEET_ID,

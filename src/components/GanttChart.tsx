@@ -62,7 +62,7 @@ export default function GanttChart() {
 			parseDate(task.startDate),
 			parseDate(task.endDate),
 			null,
-			task.status === "Finalizada" ? 100 : 0,
+			task.status === "Finalizada" ? 100 : task.progress,
 			null,
 		]),
 	];

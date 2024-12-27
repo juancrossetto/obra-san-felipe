@@ -14,7 +14,8 @@ export interface Task {
     name: string
     startDate: string
     endDate: string
-    status: 'Finalizada' | 'En Proceso' | 'Pendiente'
+    status: 'Finalizada' | 'En Proceso' | 'Pendiente',
+    progress: number
 }
 
 export interface Installment {

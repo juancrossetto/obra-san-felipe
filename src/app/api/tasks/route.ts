@@ -12,6 +12,7 @@ export async function GET() {
       startDate: task["Fecha Inicio"],
       endDate: task["Fecha Fin"],
       status: task.Estado,
+      progress: task.Progreso ? Math.round(parseFloat(task.Progreso.replace(',', '.'))) : 0
     }))
     return NextResponse.json(formattedTasks)
   } catch (error) {
