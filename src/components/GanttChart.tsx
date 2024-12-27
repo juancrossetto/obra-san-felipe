@@ -7,10 +7,10 @@ import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { Task } from "@/types";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { fetcher } from "@/lib/utils";
 
 const Chart = dynamic(() => import("react-google-charts"), { ssr: false });
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function GanttChart() {
 	const { data: tasks, isLoading } = useSWR<Task[]>("/api/tasks", fetcher);
 	const isDesktop = useMediaQuery("(min-width: 768px)");

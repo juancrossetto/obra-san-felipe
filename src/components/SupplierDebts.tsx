@@ -13,8 +13,7 @@ import {
 import useSWR from "swr";
 import { Expense } from "@/types";
 import { Skeleton } from "./ui/skeleton";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { fetcher, formatNumber } from "@/lib/utils";
 
 export default function SupplierDebts() {
 	const {
@@ -23,11 +22,10 @@ export default function SupplierDebts() {
 		isLoading,
 	} = useSWR<Expense[]>("/api/expenses", fetcher);
 
-	// Memoizar la lógica de filtrado y reducción
 	const debts = useMemo(() => {
 		if (!expenses) return [];
 		const filteredDebts = expenses
-			.filter((expense) => !expense.paid && expense.id !== 0) // Filtrar gastos no pagados y activos
+			.filter((expense) => !expense.paid && expense.id !== 0)
 			.reduce((acc: Record<string, number>, expense) => {
 				if (!acc[expense.supplier]) {
 					acc[expense.supplier] = 0;
@@ -44,7 +42,7 @@ export default function SupplierDebts() {
 
 	if (isLoading) {
 		return (
-			<Card>
+			<Card className="w-full">
 				<CardHeader>
 					<CardTitle>Deudas con Proveedores</CardTitle>
 				</CardHeader>
@@ -61,7 +59,7 @@ export default function SupplierDebts() {
 	if (error) return <div>Error cargando las deudas</div>;
 
 	return (
-		<Card>
+		<Card className="w-full">
 			<CardHeader>
 				<CardTitle>Deudas con Proveedores</CardTitle>
 			</CardHeader>
@@ -78,11 +76,7 @@ export default function SupplierDebts() {
 							<TableRow key={index}>
 								<TableCell>{debt.supplier}</TableCell>
 								<TableCell className='text-right whitespace-nowrap'>
-									${" "}
-									{new Intl.NumberFormat("en-US", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									}).format(debt.amount)}
+									$ {formatNumber(debt.amount)}
 								</TableCell>
 							</TableRow>
 						))}

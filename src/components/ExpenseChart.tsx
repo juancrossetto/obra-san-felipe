@@ -13,29 +13,29 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Expense } from "@/types";
+import { fetcher, generateColors } from "@/lib/utils";
 
 interface ExpenseData {
 	category: string;
 	amount: number;
 }
 
-const COLORS = [
-	"#0088FE",
-	"#00C49F",
-	"#FFBB28",
-	"#FF8042",
-	"#8884d8",
-	"#82ca9d",
-	"#ffc658",
-	"#ff7300",
-	"#a4de6c",
-	"#d0ed57",
-	"#83a6ed",
-	"#8dd1e1",
-];
+// const COLORS = [
+// 	"#0088FE",
+// 	"#00C49F",
+// 	"#FFBB28",
+// 	"#FF8042",
+// 	"#8884d8",
+// 	"#82ca9d",
+// 	"#ffc658",
+// 	"#ff7300",
+// 	"#a4de6c",
+// 	"#d0ed57",
+// 	"#83a6ed",
+// 	"#8dd1e1",
+// ];
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
+const COLORS = generateColors(20);
 export default function ExpenseChart() {
 	const {
 		data: expenses,
@@ -171,7 +171,7 @@ export default function ExpenseChart() {
 				<CardTitle>Distribución de Gastos</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div className='w-full h-[400px] md:h-[500px] lg:h-[600px]'>
+				<div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
 					<ResponsiveContainer width='100%' height='100%'>
 						<PieChart>
 							<Pie
@@ -180,8 +180,8 @@ export default function ExpenseChart() {
 								data={chartData}
 								cx='50%'
 								cy='50%'
-								innerRadius="30%"
-								outerRadius="60%"
+								innerRadius='30%'
+								outerRadius='60%'
 								fill='#8884d8'
 								dataKey='amount'
 								onMouseEnter={onPieEnter}

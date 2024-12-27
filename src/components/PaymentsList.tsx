@@ -33,8 +33,7 @@ import Image from "next/image";
 import { Payment } from "@/types";
 import useSWR from "swr";
 import moment from "moment";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { fetcher, formatNumber } from "@/lib/utils";
 
 export default function PaymentsList() {
 	const {
@@ -152,11 +151,7 @@ export default function PaymentsList() {
 			<div className='flex justify-between items-center mb-2'>
 				<h3 className='text-lg font-semibold'>{payment.description}</h3>
 				<span className='text-lg font-bold whitespace-nowrap'>
-					$
-					{new Intl.NumberFormat("en-US", {
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					}).format(payment.amount)}
+					${formatNumber(payment.amount)}
 				</span>
 			</div>
 			<p className='text-sm text-gray-600 mb-1'>Fecha: {payment.date}</p>
@@ -225,11 +220,7 @@ export default function PaymentsList() {
 								<TableCell>{payment.description}</TableCell>
 								<TableCell>{payment.paymentMethod}</TableCell>
 								<TableCell className='text-right whitespace-nowrap'>
-									$
-									{new Intl.NumberFormat("en-US", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									}).format(payment.amount)}
+									${formatNumber(payment.amount)}
 								</TableCell>
 								<TableCell>
 									<div className='flex space-x-2'>

@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useSWR from "swr";
 import { Expense } from "@/types";
 import { Skeleton } from "./ui/skeleton";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { DollarSign } from "lucide-react";
+import { fetcher, formatNumber } from "@/lib/utils";
+import { numberToWords } from "@/lib/numberToLetters";
 
 export default function ExpenseSummary() {
 	const [totalExpenses, setTotalExpenses] = useState(0);
@@ -51,17 +52,16 @@ export default function ExpenseSummary() {
 	}
 
 	return (
-		<Card className="animate-fade-in">
-			<CardHeader>
-				<CardTitle>Resumen de Gastos</CardTitle>
+		<Card>
+			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+				<CardTitle className='text-sm font-medium'>Gastos Totales</CardTitle>
+				<DollarSign className='h-4 w-4 text-muted-foreground' />
 			</CardHeader>
 			<CardContent>
-				<p className='text-3xl font-bold text-primary whitespace-nowrap'>
-					$
-					{new Intl.NumberFormat("en-US", {
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					}).format(totalExpenses)}
+				<div className='text-2xl font-bold'>${formatNumber(totalExpenses)}</div>
+				{/* <p className='text-xs text-muted-foreground'>+20.1% del mes pasado</p> */}
+				<p className='text-xs text-muted-foreground capitalize'>
+					{numberToWords(totalExpenses)}
 				</p>
 			</CardContent>
 		</Card>

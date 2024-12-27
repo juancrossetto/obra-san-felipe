@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import moment from "moment";
 import { Skeleton } from "./ui/skeleton";
+import { ArrowUpDown } from "lucide-react";
 
 interface DollarRate {
 	compra: number;
@@ -44,23 +45,23 @@ export default function DollarExchange() {
 		);
 	}
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Cotización del Dólar Oficial</CardTitle>
-			</CardHeader>
-			<CardContent>
-				{dollarRate ? (
-					<div>
-						<p>Compra: ${dollarRate.compra}</p>
-						<p>Venta: ${dollarRate.venta}</p>
-						<p>
-							Fecha: {moment(dollarRate.fecha).format("DD/MM/YYYY HH:mm:ss")}
-						</p>
-					</div>
-				) : (
-					<p>Error al cargar la cotización</p>
-				)}
-			</CardContent>
-		</Card>
+		 <Card>
+		 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+		   <CardTitle className="text-sm font-medium">Dólar Blue</CardTitle>
+		   <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+		 </CardHeader>
+		 <CardContent>
+		   {dollarRate ? (
+			 <div className="space-y-1">
+			   <div className="text-2xl font-bold">${dollarRate.venta.toFixed(2)}</div>
+			   <p className="text-xs text-muted-foreground">
+				 Compra: ${dollarRate.compra.toFixed(2)} | Actualizado: {moment(dollarRate.fecha).format("DD/MM/YYYY HH:mm:ss")}
+			   </p>
+			 </div>
+		   ) : (
+			 <p className="text-sm text-muted-foreground">Error al cargar la cotización</p>
+		   )}
+		 </CardContent>
+	   </Card>
 	);
 }

@@ -17,13 +17,12 @@ import {
 import moment from "moment";
 import useSWR from "swr";
 import { Expense } from "@/types";
+import { fetcher } from "@/lib/utils";
 
 interface ChartData {
 	date: string;
 	amount: number;
 }
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function DailyExpenseChart() {
 	const {

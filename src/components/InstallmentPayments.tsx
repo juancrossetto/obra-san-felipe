@@ -13,30 +13,30 @@ import { Badge } from "@/components/ui/badge";
 import { Installment } from "@/types";
 import useSWR from "swr";
 import { Skeleton } from "./ui/skeleton";
+import { fetcher, formatNumber } from "@/lib/utils";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function InstallmentPayments() {
-	const {
-		data: payments,
-        isLoading,
-	} = useSWR<Installment[]>("/api/installments", fetcher);
+	const { data: payments, isLoading } = useSWR<Installment[]>(
+		"/api/installments",
+		fetcher
+	);
 	const total = payments?.reduce((sum, payment) => sum + payment.amount, 0);
-    if (isLoading) {
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Pagos Lote (85k)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton key={index} className="h-12 w-full" />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )
-      }
+	if (isLoading) {
+		return (
+			<Card>
+				<CardHeader>
+					<CardTitle>Pagos Lote (85k)</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className='space-y-2'>
+						{Array.from({ length: 5 }).map((_, index) => (
+							<Skeleton key={index} className='h-12 w-full' />
+						))}
+					</div>
+				</CardContent>
+			</Card>
+		);
+	}
 	return (
 		<Card className='mt-3'>
 			<CardHeader>
@@ -61,10 +61,7 @@ export default function InstallmentPayments() {
 									<TableCell>{payment.installment}</TableCell>
 									<TableCell className='text-right whitespace-nowrap'>
 										${" "}
-										{new Intl.NumberFormat("en-US", {
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2,
-										}).format(payment.amount)}
+										{formatNumber(payment.amount)}
 									</TableCell>
 									<TableCell>{payment.dueDate}</TableCell>
 									<TableCell>
@@ -85,11 +82,7 @@ export default function InstallmentPayments() {
 									TOTAL
 								</TableCell>
 								<TableCell className='text-right font-bold'>
-									${" "}
-									{new Intl.NumberFormat("en-US", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									}).format(total || 0)}
+									$ {formatNumber(total || 0)}
 								</TableCell>
 								<TableCell colSpan={2}></TableCell>
 							</TableRow>

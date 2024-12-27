@@ -41,15 +41,13 @@ import { Expense } from "@/types";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Skeleton } from "./ui/skeleton";
 import { X, ZoomIn, ZoomOut } from "lucide-react";
-import { capitalizeText } from "@/lib/utils";
+import { capitalizeText, fetcher, formatNumber } from "@/lib/utils";
 import Image from "next/image";
 import ExpenseForm from "./ExpenseForm";
 
 type EditableExpense = Expense & {
 	rowIndex: number; // Añade rowIndex al tipo
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ExpenseList() {
 	const {
@@ -224,11 +222,7 @@ export default function ExpenseList() {
 			<p className='text-sm mb-1'>{expense.description}</p>
 			<p className='text-sm mb-1'>Proveedor: {expense.supplier}</p>
 			<p className='text-lg font-bold mb-2 whitespace-nowrap'>
-				$
-				{new Intl.NumberFormat("en-US", {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2,
-				}).format(expense.amount)}
+				${formatNumber(expense.amount)}
 			</p>
 			{expense.images && (
 				<Button
@@ -367,11 +361,7 @@ export default function ExpenseList() {
 										</Badge>
 									</TableCell>
 									<TableCell className='text-right whitespace-nowrap'>
-										${" "}
-										{new Intl.NumberFormat("en-US", {
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2,
-										}).format(expense.amount)}
+										${formatNumber(expense.amount)}
 									</TableCell>
 									<TableCell>
 										{expense?.images?.length > 0 && (
