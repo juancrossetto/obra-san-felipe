@@ -186,27 +186,27 @@ export default function PaymentsList() {
 	return (
 		<div>
 			<div className='flex justify-between items-center mb-4'>
-				<h2 className='text-2xl font-bold'>Lista de Pagos</h2>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant='outline'
-								size='icon'
-								onClick={() => setIsImageDialogOpen(true)}
-							>
-								<FileText className='h-4 w-4' />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Ver presupuesto firmado</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
+				<h2 className='text-2xl font-bold text-primary'>Lista de Pagos</h2>
+				<div className='flex items-center space-x-2'>
+					<Button onClick={() => setIsAddDialogOpen(true)}>Agregar Pago</Button>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant='outline'
+									size='icon'
+									onClick={() => setIsImageDialogOpen(true)}
+								>
+									<FileText className='h-4 w-4' />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Ver presupuesto firmado</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</div>
 			</div>
-			<Button onClick={() => setIsAddDialogOpen(true)} className='mb-4'>
-				Agregar Pago
-			</Button>
 			{isDesktop ? (
 				<Table>
 					<TableHeader>

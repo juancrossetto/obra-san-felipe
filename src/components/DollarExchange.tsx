@@ -18,7 +18,7 @@ export default function DollarExchange() {
 	useEffect(() => {
 		const fetchDollarRate = async () => {
 			try {
-				const response = await fetch("https://dolarapi.com/v1/dolares/oficial");
+				const response = await fetch("https://dolarapi.com/v1/dolares/blue");
 				const data = await response.json();
 				setDollarRate(data);
 			} catch (error) {
@@ -33,7 +33,7 @@ export default function DollarExchange() {
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Cotización del Dólar Oficial</CardTitle>
+					<CardTitle>Cotización del Dólar Blue</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<Skeleton className='h-4 w-24' />

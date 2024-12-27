@@ -51,12 +51,12 @@ export default function ExpenseSummary() {
 	}
 
 	return (
-		<Card>
+		<Card className="animate-fade-in">
 			<CardHeader>
 				<CardTitle>Resumen de Gastos</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<p className='text-3xl font-bold whitespace-nowrap'>
+				<p className='text-3xl font-bold text-primary whitespace-nowrap'>
 					$
 					{new Intl.NumberFormat("en-US", {
 						minimumFractionDigits: 2,

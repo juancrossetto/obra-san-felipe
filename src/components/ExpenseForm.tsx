@@ -129,7 +129,7 @@ export default function ExpenseForm() {
 	};
 
 	return (
-		<Card>
+		<Card className='animate-slide-in'>
 			<CardHeader>
 				<CardTitle>Agregar Nuevo Gasto</CardTitle>
 			</CardHeader>

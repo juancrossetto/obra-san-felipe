@@ -43,6 +43,7 @@ import { Skeleton } from "./ui/skeleton";
 import { X, ZoomIn, ZoomOut } from "lucide-react";
 import { capitalizeText } from "@/lib/utils";
 import Image from "next/image";
+import ExpenseForm from "./ExpenseForm";
 
 type EditableExpense = Expense & {
 	rowIndex: number; // Añade rowIndex al tipo
@@ -70,6 +71,7 @@ export default function ExpenseList() {
 	const [selectedImages, setSelectedImages] = useState<string[]>([]);
 	const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 	const [zoomLevel, setZoomLevel] = useState(1);
+	const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
 	const categories: string[] = Array.from(
 		new Set(expenses?.map((e: Expense) => capitalizeText(e.category)) || [])
@@ -201,7 +203,11 @@ export default function ExpenseList() {
 	};
 
 	const renderExpenseItem = (expense: Expense, index: number) => (
-		<div key={expense.id} className='bg-white p-4 rounded-lg shadow mb-4'>
+		<div
+			key={expense.id}
+			className={`bg-card text-card-foreground p-4 rounded-lg shadow mb-4 animate-slide-in`}
+			style={{ animationDelay: `${index * 0.1}s` }}
+		>
 			<div className='flex justify-between items-center mb-2'>
 				<h3 className='text-lg font-semibold'>{expense.category}</h3>
 				<Badge
@@ -300,8 +306,14 @@ export default function ExpenseList() {
 	if (error) return <div>Error loading expenses</div>;
 
 	return (
-		<div>
-			<h2 className='text-2xl font-bold mb-4'>Lista de Gastos</h2>
+		<div className='animate-fade-in'>
+			<div className='flex justify-between items-center mb-4'>
+				<h2 className='text-2xl font-bold text-primary'>Lista de Gastos</h2>
+				<Button onClick={() => setIsAddFormVisible(!isAddFormVisible)}>
+					{isAddFormVisible ? "Cerrar formulario" : "Agregar Gasto"}
+				</Button>
+			</div>
+			{isAddFormVisible && <ExpenseForm />}
 			{isDesktop ? (
 				<div className='overflow-x-auto'>
 					<Table>
@@ -319,7 +331,11 @@ export default function ExpenseList() {
 						</TableHeader>
 						<TableBody>
 							{expenses?.map((expense, index) => (
-								<TableRow key={index}>
+								<TableRow
+									key={index}
+									className='animate-slide-in'
+									style={{ animationDelay: `${index * 0.05}s` }}
+								>
 									<TableCell>{expense.date}</TableCell>
 									<TableCell>
 										<TooltipProvider>
