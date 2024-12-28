@@ -32,7 +32,7 @@ export default function DollarExchange() {
 	}, []);
 	if (loading) {
 		return (
-			<Card>
+			<Card className='w-full'>
 				<CardHeader>
 					<CardTitle>Cotización del Dólar Blue</CardTitle>
 				</CardHeader>
@@ -45,7 +45,7 @@ export default function DollarExchange() {
 		);
 	}
 	return (
-		<Card className='animate-fade-in'>
+		<Card className='animate-fade-in w-full'>
 			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
 				<CardTitle className='text-sm font-medium'>Dólar Blue</CardTitle>
 				<ArrowUpDown className='h-4 w-4 text-muted-foreground' />

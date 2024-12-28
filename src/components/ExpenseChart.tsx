@@ -9,11 +9,15 @@ import {
 	ResponsiveContainer,
 	Tooltip,
 	Sector,
+	TooltipProps,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Expense } from "@/types";
 import { fetcher, generateColors } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const Chart = dynamic(() => import("react-google-charts"), { ssr: false });
 
 interface ExpenseData {
 	category: string;
@@ -165,13 +169,26 @@ export default function ExpenseChart() {
 	}
 	if (error) return <div>Error al cargar los datos</div>;
 
+	const googleChartData = [
+		["Categoría", "Monto"], // Header
+		...chartData.map((item) => [item.category, item.amount]),
+	];
+
+	const chartOptions = {
+		// title: "Distribución de Gastos",
+		pieHole: 0.4, // Hacerlo un gráfico de dona (opcional)
+		// pieSliceText: "none", // Mostrar solo tooltips
+		// tooltip: { text: "value" }, // Mostrar valor en el tooltip
+		legend: { position: "bottom" },
+		chartArea: { width: "90%", height: "75%" },
+	};
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle>Distribución de Gastos</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
+				{/* <div className='w-full h-[200px] sm:h-[360px] md:h-[400px] lg:h-[440px]'>
 					<ResponsiveContainer width='100%' height='100%'>
 						<PieChart>
 							<Pie
@@ -180,8 +197,8 @@ export default function ExpenseChart() {
 								data={chartData}
 								cx='50%'
 								cy='50%'
-								innerRadius='30%'
-								outerRadius='60%'
+								innerRadius='60%'
+								outerRadius='80%'
 								fill='#8884d8'
 								dataKey='amount'
 								onMouseEnter={onPieEnter}
@@ -201,6 +218,15 @@ export default function ExpenseChart() {
 							/>
 						</PieChart>
 					</ResponsiveContainer>
+				</div> */}
+				<div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
+					<Chart
+						chartType='PieChart'
+						width='100%'
+						height='100%'
+						data={googleChartData}
+						options={chartOptions}
+					/>
 				</div>
 			</CardContent>
 		</Card>
