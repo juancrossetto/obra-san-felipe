@@ -65,7 +65,7 @@ export default function WeatherWidget() {
 		const fetchWeather = async () => {
 			try {
 				// Ubicación deseada
-				const city = "Buenos Aires";
+				const city = "Canning,AR";
 				const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`;
 
 				const response = await fetch(apiUrl);
