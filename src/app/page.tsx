@@ -19,8 +19,8 @@ export default function Home() {
 					Dashboard de Control de Obra
 				</h1>
 
-				<div className='grid grid-cols-1 lg:grid-cols-10 gap-4 mb-8'>
-					<div className='lg:col-span-3  flex'>
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+					{/* <div className='lg:col-span-3  flex'>
 						<ExpenseSummary />
 					</div>
 					<div className='lg:col-span-3 flex'>
@@ -31,7 +31,11 @@ export default function Home() {
 					</div>
 					<div className='lg:col-span-2 flex'>
 						<WeatherWidget />
-					</div>
+					</div> */}
+					<ExpenseSummary />
+          <DollarExchange />
+          <ProjectProgress />
+          <WeatherWidget />
 				</div>
 
 				<div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-stretch'>

@@ -86,7 +86,7 @@ export default function ExpenseSummary() {
 						{numberToWords(totalCombined)}
 					</p>
 				</div>
-				<div className='flex justify-between mt-2  text-xs'>
+				<div className='flex justify-between mt-2 text-xs flex-wrap justify-evenly'>
 					<div className='text-center'>
 						<p className='text-muted-foreground'>Materiales</p>
 						<p className='font-medium'>${formatNumber(totalExpenses)}</p>
