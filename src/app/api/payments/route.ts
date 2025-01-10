@@ -10,6 +10,7 @@ export async function GET() {
       id: Number(payment.rowNumber),
       description: payment["Descripcion Pago"],
       paymentMethod: payment["Forma Pago"],
+      paidTo: payment["Pagado a"],
       date: payment["Fecha"],
       amount: parseFloat(payment["Monto"].replace(/\./g, '').replace(/,/g, '.')),
     }))

@@ -20,7 +20,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-// import { fetchPayments, addPayment, deletePayment, editPayment } from '@/lib/payments'
+import { Label } from "@/components/ui/label";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
 	Tooltip,
@@ -28,12 +28,13 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FileText } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { Payment } from "@/types";
-import useSWR from "swr";
 import moment from "moment";
+import { Payment } from "@/types";
 import { fetcher, formatNumber } from "@/lib/utils";
+import useSWR from "swr";
 
 export default function PaymentsList() {
 	const {
@@ -46,18 +47,56 @@ export default function PaymentsList() {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [currentPayment, setCurrentPayment] = useState<Payment | null>(null);
 	const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+	const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
-	//   useEffect(() => {
-	//     const loadPayments = async () => {
-	//       const fetchedPayments = await fetchPayments()
-	//       setPayments(fetchedPayments)
-	//     }
-	//     loadPayments()
-	//   }, [])
+	// useEffect(() => {
+	// 	const loadPayments = async () => {
+	// 		const fetchedPayments = await fetchPayments();
+	// 		setPayments(fetchedPayments);
+	// 	};
+	// 	loadPayments();
+	// }, []);
+
+	// const handleAddPayment = async (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault();
+	// 	const formData = new FormData(e.currentTarget);
+	// 	const newPayment = {
+	// 		amount: Number(formData.get("amount")),
+	// 		date: moment(formData.get("date") as string).format("DD/MM/YYYY"),
+	// 		description: formData.get("description") as string,
+	// 		paymentMethod: formData.get("paymentMethod") as string,
+	// 		paidTo: formData.get("paidTo") as string,
+	// 	};
+	// 	await addPayment(newPayment);
+	// 	setPayments(await fetchPayments());
+	// 	setIsAddDialogOpen(false);
+	// 	setIsAddFormVisible(false);
+	// };
+
+	// const handleEditPayment = async (e: React.FormEvent<HTMLFormElement>) => {
+	// 	e.preventDefault();
+	// 	if (!currentPayment) return;
+	// 	const formData = new FormData(e.currentTarget);
+	// 	const updatedPayment = {
+	// 		amount: Number(formData.get("amount")),
+	// 		date: moment(formData.get("date") as string).format("DD/MM/YYYY"),
+	// 		description: formData.get("description") as string,
+	// 		paymentMethod: formData.get("paymentMethod") as string,
+	// 		paidTo: formData.get("paidTo") as string,
+	// 	};
+	// 	await editPayment(currentPayment.id, updatedPayment);
+	// 	setPayments(await fetchPayments());
+	// 	setIsEditDialogOpen(false);
+	// };
+
+	// const handleDeletePayment = async (id: number) => {
+	// 	await deletePayment(id);
+	// 	setPayments(await fetchPayments());
+	// };
 
 	const handleAddPayment = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -155,7 +194,8 @@ export default function PaymentsList() {
 				</span>
 			</div>
 			<p className='text-sm text-gray-600 mb-1'>Fecha: {payment.date}</p>
-			<p className='text-sm mb-2'>Forma de pago: {payment.paymentMethod}</p>
+			<p className='text-sm mb-1'>Forma de pago: {payment.paymentMethod}</p>
+			<p className='text-sm mb-2'>Pagado a: {payment.paidTo}</p>
 			<div className='flex space-x-2'>
 				<Button
 					variant='outline'
@@ -178,12 +218,67 @@ export default function PaymentsList() {
 		</div>
 	);
 
+	const renderPaymentsTable = (payments: Payment[]) => (
+		<Table>
+			<TableHeader>
+				<TableRow>
+					<TableHead>Fecha</TableHead>
+					<TableHead>Descripción</TableHead>
+					<TableHead>Forma de Pago</TableHead>
+					<TableHead>Pagado a</TableHead>
+					<TableHead className='text-right'>Monto</TableHead>
+					<TableHead>Acciones</TableHead>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				{payments.map((payment) => (
+					<TableRow key={payment.id}>
+						<TableCell>{payment.date}</TableCell>
+						<TableCell>{payment.description}</TableCell>
+						<TableCell>{payment.paymentMethod}</TableCell>
+						<TableCell>{payment.paidTo}</TableCell>
+						<TableCell className='text-right'>
+							${formatNumber(payment.amount)}
+						</TableCell>
+						<TableCell>
+							<div className='flex space-x-2'>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => {
+										setCurrentPayment(payment);
+										setIsEditDialogOpen(true);
+									}}
+								>
+									{isEditing ? "Editando..." : "Editar"}
+								</Button>
+								<Button
+									variant='destructive'
+									size='sm'
+									onClick={() => handleDeletePayment(payment.id)}
+								>
+									{isDeleting ? "Eliminando..." : "Eliminar"}
+								</Button>
+							</div>
+						</TableCell>
+					</TableRow>
+				))}
+			</TableBody>
+		</Table>
+	);
+
+	const alexxPayments = (payments || []).filter(
+		(payment) => payment.paidTo === "Alexx"
+	);
+	const otherPayments = (payments || []).filter(
+		(payment) => payment.paidTo !== "Alexx"
+	);
+
 	return (
 		<div>
 			<div className='flex justify-between items-center mb-4'>
 				<h2 className='text-2xl font-bold text-primary'>Lista de Pagos</h2>
 				<div className='flex items-center space-x-2'>
-					<Button onClick={() => setIsAddDialogOpen(true)}>Agregar Pago</Button>
 					<TooltipProvider>
 						<Tooltip>
 							<TooltipTrigger asChild>
@@ -200,117 +295,70 @@ export default function PaymentsList() {
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
+					<Button onClick={() => setIsAddFormVisible(!isAddFormVisible)}>
+						{isAddFormVisible ? "Cerrar formulario" : "Agregar Pago"}
+					</Button>
 				</div>
 			</div>
-			{isDesktop ? (
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Fecha</TableHead>
-							<TableHead>Descripción</TableHead>
-							<TableHead>Forma de Pago</TableHead>
-							<TableHead className='text-right'>Monto</TableHead>
-							<TableHead>Acciones</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{payments?.map((payment) => (
-							<TableRow key={payment.id}>
-								<TableCell>{payment.date}</TableCell>
-								<TableCell>{payment.description}</TableCell>
-								<TableCell>{payment.paymentMethod}</TableCell>
-								<TableCell className='text-right whitespace-nowrap'>
-									${formatNumber(payment.amount)}
-								</TableCell>
-								<TableCell>
-									<div className='flex space-x-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => {
-												setCurrentPayment(payment);
-												setIsEditDialogOpen(true);
-											}}
-										>
-											{isEditing ? "Editando..." : "Editar"}
-										</Button>
-										<Button
-											variant='destructive'
-											size='sm'
-											onClick={() => handleDeletePayment(payment.id)}
-										>
-											{isDeleting ? "Eliminando..." : "Eliminar"}
-										</Button>
+
+			{isAddFormVisible && (
+				<Card className='mb-6'>
+					<CardHeader>
+						<CardTitle>Agregar Nuevo Pago</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleAddPayment}>
+							<div className='grid gap-4'>
+								<div className='grid grid-cols-2 gap-4'>
+									<div>
+										<Label htmlFor='amount'>Monto</Label>
+										<Input id='amount' name='amount' type='number' required />
 									</div>
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			) : (
-				<div className='space-y-4'>{payments?.map(renderPaymentItem)}</div>
+									<div>
+										<Label htmlFor='date'>Fecha</Label>
+										<Input id='date' name='date' type='date' required />
+									</div>
+								</div>
+								<div>
+									<Label htmlFor='description'>Descripción</Label>
+									<Input id='description' name='description' required />
+								</div>
+								<div>
+									<Label htmlFor='paymentMethod'>Forma de Pago</Label>
+									<Input id='paymentMethod' name='paymentMethod' required />
+								</div>
+								<div>
+									<Label htmlFor='paidTo'>Pagado a</Label>
+									<Input id='paidTo' name='paidTo' required />
+								</div>
+								<Button type='submit'>Agregar Pago</Button>
+							</div>
+						</form>
+					</CardContent>
+				</Card>
 			)}
 
-			<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Agregar Pago</DialogTitle>
-					</DialogHeader>
-					<form onSubmit={handleAddPayment}>
-						<div className='grid gap-4 py-4'>
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='amount' className='text-right'>
-									Monto
-								</label>
-								<Input
-									id='amount'
-									name='amount'
-									type='number'
-									className='col-span-3'
-									required
-								/>
-							</div>
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='date' className='text-right'>
-									Fecha
-								</label>
-								<Input
-									id='date'
-									name='date'
-									type='date'
-									className='col-span-3'
-									required
-								/>
-							</div>
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='description' className='text-right'>
-									Descripción
-								</label>
-								<Input
-									id='description'
-									name='description'
-									className='col-span-3'
-									required
-								/>
-							</div>
-							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='paymentMethod' className='text-right'>
-									Forma de Pago
-								</label>
-								<Input
-									id='paymentMethod'
-									name='paymentMethod'
-									className='col-span-3'
-									required
-								/>
-							</div>
-						</div>
-						<DialogFooter>
-							<Button type='submit'>Agregar Pago</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
+			<Card className='mb-6'>
+				<CardHeader>
+					<CardTitle>Pagos a Alexx</CardTitle>
+				</CardHeader>
+				<CardContent>
+					{isDesktop
+						? renderPaymentsTable(alexxPayments)
+						: alexxPayments.map(renderPaymentItem)}
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader>
+					<CardTitle>Otros Pagos</CardTitle>
+				</CardHeader>
+				<CardContent>
+					{isDesktop
+						? renderPaymentsTable(otherPayments)
+						: otherPayments.map(renderPaymentItem)}
+				</CardContent>
+			</Card>
 
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
@@ -320,9 +368,9 @@ export default function PaymentsList() {
 					<form onSubmit={(e) => handleEditPayment(e, currentPayment)}>
 						<div className='grid gap-4 py-4'>
 							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='edit-amount' className='text-right'>
+								<Label htmlFor='edit-amount' className='text-right'>
 									Monto
-								</label>
+								</Label>
 								<Input
 									id='edit-amount'
 									name='amount'
@@ -333,9 +381,9 @@ export default function PaymentsList() {
 								/>
 							</div>
 							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='edit-date' className='text-right'>
+								<Label htmlFor='edit-date' className='text-right'>
 									Fecha
-								</label>
+								</Label>
 								<Input
 									id='edit-date'
 									name='date'
@@ -352,9 +400,9 @@ export default function PaymentsList() {
 								/>
 							</div>
 							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='edit-description' className='text-right'>
+								<Label htmlFor='edit-description' className='text-right'>
 									Descripción
-								</label>
+								</Label>
 								<Input
 									id='edit-description'
 									name='description'
@@ -364,14 +412,26 @@ export default function PaymentsList() {
 								/>
 							</div>
 							<div className='grid grid-cols-4 items-center gap-4'>
-								<label htmlFor='edit-paymentMethod' className='text-right'>
+								<Label htmlFor='edit-paymentMethod' className='text-right'>
 									Forma de Pago
-								</label>
+								</Label>
 								<Input
 									id='edit-paymentMethod'
 									name='paymentMethod'
 									className='col-span-3'
 									defaultValue={currentPayment?.paymentMethod}
+									required
+								/>
+							</div>
+							<div className='grid grid-cols-4 items-center gap-4'>
+								<Label htmlFor='edit-paidTo' className='text-right'>
+									Pagado a
+								</Label>
+								<Input
+									id='edit-paidTo'
+									name='paidTo'
+									className='col-span-3'
+									defaultValue={currentPayment?.paidTo}
 									required
 								/>
 							</div>
@@ -390,7 +450,7 @@ export default function PaymentsList() {
 					</DialogHeader>
 					<div className='relative h-[60vh]'>
 						<Image
-							src='/presupuesto.png'
+							src='/placeholder.svg?height=800&width=600'
 							alt='Presupuesto firmado'
 							layout='fill'
 							objectFit='contain'

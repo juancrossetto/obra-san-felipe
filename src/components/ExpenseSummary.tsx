@@ -11,7 +11,8 @@ import { numberToWords } from "@/lib/numberToLetters";
 
 export default function ExpenseSummary() {
 	const [totalExpenses, setTotalExpenses] = useState(0);
-	const [totalPayments, setTotalPayments] = useState(0);
+	const [totalAlexxPayments, setTotalAlexxPayments] = useState(0);
+	const [totalOtherPayments, setTotalOtherPayments] = useState(0);
 	const [totalCombined, setTotalCombined] = useState(0);
 	const {
 		data: expenses,
@@ -30,14 +31,21 @@ export default function ExpenseSummary() {
 			setTotalExpenses(total);
 		}
 		if (payments) {
-			const total = payments.reduce((sum, payment) => sum + payment.amount, 0); // Asume que `amount` existe en `payments`
-			setTotalPayments(total);
+			const total = payments
+				.filter((p) => p.paidTo?.toLowerCase() === "alexx")
+				?.reduce((sum, payment) => sum + payment.amount, 0); // Asume que `amount` existe en `payments`
+			setTotalAlexxPayments(total);
+
+			const totalOther = payments
+				.filter((p) => p.paidTo?.toLowerCase() !== "alexx")
+				?.reduce((sum, payment) => sum + payment.amount, 0); // Asume que `amount` existe en `payments`
+			setTotalOtherPayments(totalOther);
 		}
 	}, [expenses, payments]);
 
 	useEffect(() => {
-		setTotalCombined(totalExpenses + totalPayments);
-	  }, [totalExpenses, totalPayments]);
+		setTotalCombined(totalExpenses + totalAlexxPayments + totalOtherPayments);
+	}, [totalExpenses, totalAlexxPayments, totalOtherPayments]);
 
 	if (isLoading || isLoadingPayments) {
 		return (
@@ -78,14 +86,18 @@ export default function ExpenseSummary() {
 						{numberToWords(totalCombined)}
 					</p>
 				</div>
-				<div className='flex justify-between mt-2 text-sm'>
+				<div className='flex justify-between mt-2  text-xs'>
 					<div className='text-center'>
 						<p className='text-muted-foreground'>Materiales</p>
 						<p className='font-medium'>${formatNumber(totalExpenses)}</p>
 					</div>
 					<div className='text-center'>
-						<p className='text-muted-foreground'>Pagos</p>
-						<p className='font-medium'>${formatNumber(totalPayments)}</p>
+						<p className='text-muted-foreground'>Pagos a Alexx</p>
+						<p className='font-medium'>${formatNumber(totalAlexxPayments)}</p>
+					</div>
+					<div className='text-center'>
+						<p className='text-muted-foreground'>Otros Pagos</p>
+						<p className='font-medium'>${formatNumber(totalOtherPayments)}</p>
 					</div>
 				</div>
 			</CardContent>

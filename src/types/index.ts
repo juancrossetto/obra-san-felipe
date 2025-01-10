@@ -32,4 +32,5 @@ export interface Payment {
     paymentMethod: string
     date: string
     amount: number
+    paidTo: string
   }
