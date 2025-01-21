@@ -10,10 +10,12 @@ import DailyExpenseChart from "@/components/DailyExpenseChart";
 import ProjectProgress from "@/components/ProjectProgress";
 import WeatherWidget from "@/components/WeatherWidget";
 import TaskList from "@/components/TaskList";
+import UnpaidExpenseWarning from "@/components/UnpaidExpenseWarning";
 
 export default function Home() {
 	return (
 		<div className='min-h-screen bg-gray-100'>
+			<UnpaidExpenseWarning />
 			<div className='container mx-auto px-4 py-8'>
 				<h1 className='text-3xl font-bold mb-8 text-gray-800'>
 					Dashboard de Control de Obra
@@ -33,9 +35,9 @@ export default function Home() {
 						<WeatherWidget />
 					</div> */}
 					<ExpenseSummary />
-          <DollarExchange />
-          <ProjectProgress />
-          <WeatherWidget />
+					<DollarExchange />
+					<ProjectProgress />
+					<WeatherWidget />
 				</div>
 
 				<div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-stretch'>

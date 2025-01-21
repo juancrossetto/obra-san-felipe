@@ -62,7 +62,7 @@ export default function GanttChart() {
 			parseDate(task.startDate),
 			parseDate(task.endDate),
 			null,
-			task.status === "Finalizada" ? 100 : task.progress,
+			task.status === "Finalizada" || "Cancelada" ? 100 : task.progress,
 			null,
 		]),
 	];
@@ -83,7 +83,7 @@ export default function GanttChart() {
 					light: "#D1D5DB",
 				},
 				{
-					color: "#60A5FA", // Celeste para tareas en progreso
+					color: "#60A5FA", // Celeste para tareas en proceso
 					dark: "#3B82F6",
 					light: "#93C5FD",
 				},
@@ -91,6 +91,11 @@ export default function GanttChart() {
 					color: "#34D399", // Verde para tareas completadas
 					dark: "#10B981",
 					light: "#6EE7B7",
+				},
+				{
+					color: "#EF4444", // Rojo para tareas canceladas
+					dark: "#DC2626",
+					light: "#FCA5A5",
 				},
 			],
 		},
@@ -111,7 +116,9 @@ export default function GanttChart() {
 								? "bg-gray-200 text-gray-800"
 								: task.status === "En Proceso"
 								? "bg-blue-200 text-blue-800"
-								: "bg-green-200 text-green-800"
+								: task.status === "Finalizada"
+								? "bg-green-200 text-green-800"
+								: "bg-red-200 text-red-800"
 						}
 					>
 						{task.status}
@@ -133,10 +140,13 @@ export default function GanttChart() {
 							Pendiente
 						</Badge>
 						<Badge variant='outline' className='bg-blue-200 text-blue-800'>
-							En Progreso
+							En Proceso
 						</Badge>
 						<Badge variant='outline' className='bg-green-200 text-green-800'>
-							Completado
+							Finalizada
+						</Badge>
+						<Badge variant='outline' className='bg-red-200 text-red-800'>
+							Cancelada
 						</Badge>
 					</div>
 				</CardTitle>
