@@ -13,6 +13,8 @@ export async function GET() {
       paidTo: payment["Pagado a"],
       date: payment["Fecha"],
       amount: parseFloat(payment["Monto"].replace(/\./g, '').replace(/,/g, '.')),
+      daysWorked: Number(payment["Dias trabajados"]),
+      paydDays: Number(payment["Dias pagados"]),
     }))
     
     return NextResponse.json(formattedPayments)

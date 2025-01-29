@@ -33,4 +33,6 @@ export interface Payment {
     date: string
     amount: number
     paidTo: string
+    daysWorked: number
+    paydDays: number
   }
