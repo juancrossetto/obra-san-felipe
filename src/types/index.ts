@@ -35,4 +35,12 @@ export interface Payment {
     paidTo: string
     daysWorked: number
     paydDays: number
-  }
+}
+
+export interface DailyWork {
+    day: string
+    date: string
+    description: string
+    isAdditional: string
+    additionalDescription: string
+}

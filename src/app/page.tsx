@@ -11,6 +11,7 @@ import ProjectProgress from "@/components/ProjectProgress";
 import WeatherWidget from "@/components/WeatherWidget";
 import TaskList from "@/components/TaskList";
 import UnpaidExpenseWarning from "@/components/UnpaidExpenseWarning";
+import DailyWorksTimeline from "@/components/DailyWorksTimeline";
 
 export default function Home() {
 	return (
@@ -56,6 +57,10 @@ export default function Home() {
 
 				<div className='mb-8'>
 					<GanttChart />
+				</div>
+
+				<div className='mb-8'>
+					<DailyWorksTimeline />
 				</div>
 
 				<div className='mb-8'>
