@@ -35,7 +35,7 @@ export default function DailyWorksTimeline() {
 	return (
 		<Card className='w-full'>
 			<CardHeader>
-				<CardTitle className='flex justify-between items-center'>
+				<CardTitle className='flex justify-between items-center text-lg'>
 					<span>Trabajos Diarios</span>
 					<Badge variant='secondary'>
 						Días adicionales: {additionalDaysCount}
@@ -66,19 +66,19 @@ export default function DailyWorksTimeline() {
 									</div>
 									<div className='flex-grow pl-4'>
 										<div className='flex items-center mb-1'>
-											<h3 className='text-lg font-semibold'>{work.date}</h3>
-											<span className='ml-2 px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full'>
+											<h3 className='font-semibold text-sm'>{work.date}</h3>
+											<span className='ml-2 px-2 py-0.5 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full'>
 												Día {work.day}
 											</span>
 											{work.isAdditional && (
-												<Badge variant='destructive' className='ml-2'>
+												<Badge variant='destructive' className='ml-2 text-xs'>
 													Día Adicional
 												</Badge>
 											)}
 										</div>
-										<p className='text-gray-700'>{work.description}</p>
+										<p className='text-gray-700 text-sm'>{work.description}</p>
 										{work.isAdditional && work.additionalDescription && (
-											<p className='mt-1 text-sm text-yellow-600 bg-yellow-100 p-1.5 rounded'>
+											<p className='mt-1 text-xs text-yellow-600 bg-yellow-100 p-1.5 rounded'>
 												<strong>Descripción adicional:</strong>{" "}
 												{work.additionalDescription}
 											</p>
