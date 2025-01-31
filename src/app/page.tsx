@@ -50,6 +50,9 @@ export default function Home() {
 					</div>
 				</div>
 
+				<div className='mb-8'>
+					<DailyWorksTimeline />
+				</div>
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
 					<DailyExpenseChart />
 					<TaskList />
@@ -57,10 +60,6 @@ export default function Home() {
 
 				<div className='mb-8'>
 					<GanttChart />
-				</div>
-
-				<div className='mb-8'>
-					<DailyWorksTimeline />
 				</div>
 
 				<div className='mb-8'>

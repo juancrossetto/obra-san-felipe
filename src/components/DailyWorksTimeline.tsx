@@ -8,6 +8,8 @@ import { DailyWork } from "@/types";
 import { fetcher } from "@/lib/utils";
 import useSWR from "swr";
 import { Skeleton } from "./ui/skeleton";
+import moment from "moment";
+import { Calendar, XCircle } from "lucide-react";
 
 export default function DailyWorksTimeline() {
 	const {
@@ -27,7 +29,9 @@ export default function DailyWorksTimeline() {
 		return (
 			<Card>
 				<CardHeader>Trabajos Diarios</CardHeader>
-				<CardContent><Skeleton className='h-[300px] w-full' /></CardContent>
+				<CardContent>
+					<Skeleton className='h-[300px] w-full' />
+				</CardContent>
 			</Card>
 		);
 	}
@@ -47,7 +51,11 @@ export default function DailyWorksTimeline() {
 					<div className='relative'>
 						<div className='absolute left-2 top-0 bottom-0 w-0.5 bg-gray-200'></div>
 						{works
-							?.sort((a, b) => Number(b.day) - Number(a.day))
+							?.sort(
+								(a, b) =>
+									moment(b.date, "DD/MM/YYYY").valueOf() -
+									moment(a.date, "DD/MM/YYYY").valueOf()
+							)
 							?.map((work, index) => (
 								<div
 									key={index}
@@ -67,9 +75,18 @@ export default function DailyWorksTimeline() {
 									<div className='flex-grow pl-4'>
 										<div className='flex items-center mb-1'>
 											<h3 className='font-semibold text-sm'>{work.date}</h3>
-											<span className='ml-2 px-2 py-0.5 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full'>
-												Día {work.day}
-											</span>
+											{work.day ? (
+												<span className='ml-2 px-2 py-0.5 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full flex items-center'>
+													<Calendar className='w-3 h-3 mr-1' />
+													Día {work.day}
+												</span>
+											) : (
+												<span className='ml-2 px-2 py-0.5 text-xs font-semibold text-gray-600 bg-gray-200 rounded-full flex items-center'>
+													<XCircle className='w-3 h-3 mr-1' />
+													No trabajado
+												</span>
+											)}
+
 											{work.isAdditional && (
 												<Badge variant='destructive' className='ml-2 text-xs'>
 													Día Adicional
