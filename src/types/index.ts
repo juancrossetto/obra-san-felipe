@@ -16,6 +16,7 @@ export interface Task {
     endDate: string
     status: 'Finalizada' | 'En Proceso' | 'Pendiente' | 'Cancelada',
     progress: number
+    isAdditional: boolean
 }
 
 export interface Installment {

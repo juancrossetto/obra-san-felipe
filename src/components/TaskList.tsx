@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import useSWR from "swr";
 import { Task } from "@/types";
 import { fetcher } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "./ui/skeleton";
 
 export default function TaskList() {
@@ -50,10 +51,20 @@ export default function TaskList() {
 							<label
 								htmlFor={`task-${task.id}`}
 								className={`text-xs ${
-									task.progress === 100 ? "line-through text-gray-500" : ""
-								}`}
+									task.status === "Finalizada" || task.status === "Cancelada"
+										? "line-through"
+										: ""
+								}
+									  ${task.isAdditional ? "text-blue-600" : "text-gray-500"}
+
+								  }`}
 							>
 								{task.name}
+								{task.isAdditional && (
+									<Badge variant='outline' className='ml-2 text-xs text-blue-600'>
+										Adicional
+									</Badge>
+								)}
 							</label>
 						</div>
 					))}

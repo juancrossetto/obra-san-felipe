@@ -57,7 +57,7 @@ export default function GanttChart() {
 		],
 		...(tasks || [])?.map((task) => [
 			task.id.toString(),
-			task.name,
+			task.name + (task.isAdditional ? " (Adicional)" : ""),
 			task.status,
 			parseDate(task.startDate),
 			parseDate(task.endDate),
@@ -112,11 +112,11 @@ export default function GanttChart() {
 					<Badge
 						variant='outline'
 						className={
-							task.status === "Pendiente"
+							task.status === "Finalizada"
 								? "bg-gray-200 text-gray-800"
 								: task.status === "En Proceso"
 								? "bg-blue-200 text-blue-800"
-								: task.status === "Finalizada"
+								: task.status === "Pendiente"
 								? "bg-green-200 text-green-800"
 								: "bg-red-200 text-red-800"
 						}
@@ -137,13 +137,13 @@ export default function GanttChart() {
 					</span>
 					<div className='flex flex-wrap gap-2'>
 						<Badge variant='outline' className='bg-gray-200 text-gray-800'>
-							Pendiente
+							Finalizada
 						</Badge>
 						<Badge variant='outline' className='bg-blue-200 text-blue-800'>
 							En Proceso
 						</Badge>
 						<Badge variant='outline' className='bg-green-200 text-green-800'>
-							Finalizada
+							Pendiente
 						</Badge>
 						<Badge variant='outline' className='bg-red-200 text-red-800'>
 							Cancelada
