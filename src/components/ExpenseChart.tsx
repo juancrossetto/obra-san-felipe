@@ -188,7 +188,7 @@ export default function ExpenseChart() {
 				<CardTitle>Distribución de Gastos</CardTitle>
 			</CardHeader>
 			<CardContent>
-				{/* <div className='w-full h-[200px] sm:h-[360px] md:h-[400px] lg:h-[440px]'>
+				<div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
 					<ResponsiveContainer width='100%' height='100%'>
 						<PieChart>
 							<Pie
@@ -197,7 +197,7 @@ export default function ExpenseChart() {
 								data={chartData}
 								cx='50%'
 								cy='50%'
-								innerRadius='60%'
+								innerRadius='50%'
 								outerRadius='80%'
 								fill='#8884d8'
 								dataKey='amount'
@@ -218,8 +218,8 @@ export default function ExpenseChart() {
 							/>
 						</PieChart>
 					</ResponsiveContainer>
-				</div> */}
-				<div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
+				</div>
+				{/* <div className='w-full h-[400px] md:h-[440px] lg:h-[480px]'>
 					<Chart
 						chartType='PieChart'
 						width='100%'
@@ -227,7 +227,7 @@ export default function ExpenseChart() {
 						data={googleChartData}
 						options={chartOptions}
 					/>
-				</div>
+				</div> */}
 			</CardContent>
 		</Card>
 	);

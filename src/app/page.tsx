@@ -1,3 +1,6 @@
+"use client";
+import { useEffect, useRef } from "react";
+import { createSwapy, Swapy } from "swapy";
 import ExpenseSummary from "@/components/ExpenseSummary";
 import ExpenseList from "@/components/ExpenseList";
 import ExpenseChart from "@/components/ExpenseChart";
@@ -14,31 +17,61 @@ import UnpaidExpenseWarning from "@/components/UnpaidExpenseWarning";
 import DailyWorksTimeline from "@/components/DailyWorksTimeline";
 
 export default function Home() {
+	const swapyRef = useRef<Swapy | null>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (containerRef.current) {
+			swapyRef.current = createSwapy(containerRef.current, {});
+
+			swapyRef.current.onBeforeSwap((event) => {
+				return true;
+			});
+
+			swapyRef.current.onSwapStart((event) => {
+				console.log("start", event);
+			});
+			swapyRef.current.onSwap((event) => {
+				console.log("swap", event);
+			});
+			swapyRef.current.onSwapEnd((event) => {
+				console.log("end", event);
+			});
+		}
+		return () => {
+			swapyRef.current?.destroy();
+		};
+	}, []);
+
 	return (
 		<div className='min-h-screen bg-gray-100'>
 			<UnpaidExpenseWarning />
-			<div className='container mx-auto px-4 py-8'>
+			<div className='container mx-auto px-4 py-8' ref={containerRef}>
 				<h1 className='text-3xl font-bold mb-8 text-gray-800'>
 					Dashboard de Control de Obra
 				</h1>
 
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-					{/* <div className='lg:col-span-3  flex'>
-						<ExpenseSummary />
+					<div className='slot top' data-swapy-slot='a'>
+						<div className='item item-a' data-swapy-item='a'>
+							<ExpenseSummary />
+						</div>
 					</div>
-					<div className='lg:col-span-3 flex'>
-						<DollarExchange />
+					<div className='slot middle-left' data-swapy-slot='b'>
+						<div className='item item-b' data-swapy-item='b'>
+							<DollarExchange />
+						</div>
 					</div>
-					<div className='lg:col-span-2 flex'>
-						<ProjectProgress />
+					<div className='slot top' data-swapy-slot='c'>
+						<div className='item item-c' data-swapy-item='c'>
+							<ProjectProgress />
+						</div>
 					</div>
-					<div className='lg:col-span-2 flex'>
-						<WeatherWidget />
-					</div> */}
-					<ExpenseSummary />
-					<DollarExchange />
-					<ProjectProgress />
-					<WeatherWidget />
+					<div className='slot top' data-swapy-slot='d'>
+						<div className='item item-d' data-swapy-item='d'>
+							<WeatherWidget />
+						</div>
+					</div>
 				</div>
 
 				<div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-stretch'>
