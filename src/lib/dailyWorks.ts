@@ -13,6 +13,7 @@ export const addDailyWork = async (dailyWork: DailyWork) => {
             dailyWork.description,
             dailyWork.isAdditional,
             dailyWork.additionalDescription,
+            dailyWork.directedBy,
         ],
     ];
 

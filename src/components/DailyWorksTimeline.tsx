@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,17 +12,27 @@ import { Skeleton } from "./ui/skeleton";
 import moment from "moment";
 import { Calendar, XCircle } from "lucide-react";
 
-export default function DailyWorksTimeline() {
+interface DailyWorksTimelineProps {
+	directedBy: string;
+}
+export default function DailyWorksTimeline({
+	directedBy,
+}: DailyWorksTimelineProps) {
 	const {
 		data: works,
 		error,
 		isLoading,
 	} = useSWR<DailyWork[]>("/api/dailyWorks", fetcher);
+	const [filteredWorks, setFilteredWorks] = useState<DailyWork[]>([]);
 	const [additionalDaysCount, setAdditionalDaysCount] = useState(0);
 
 	useEffect(() => {
 		if (works?.length) {
-			setAdditionalDaysCount(works.filter((work) => work.isAdditional).length);
+			const worksByDirected = works.filter((w) => w.directedBy === directedBy);
+			setFilteredWorks(worksByDirected);
+			setAdditionalDaysCount(
+				worksByDirected.filter((work) => work.isAdditional).length
+			);
 		}
 	}, [works]);
 
@@ -40,7 +51,7 @@ export default function DailyWorksTimeline() {
 		<Card className='w-full'>
 			<CardHeader>
 				<CardTitle className='flex justify-between items-center text-lg'>
-					<span>Trabajos Diarios</span>
+					<span>Trabajos Diarios {directedBy}</span>
 					<Badge variant='secondary'>
 						Días adicionales: {additionalDaysCount}
 					</Badge>
@@ -50,7 +61,7 @@ export default function DailyWorksTimeline() {
 				<ScrollArea className='h-[600px] pr-4'>
 					<div className='relative'>
 						<div className='absolute left-2 top-0 bottom-0 w-0.5 bg-gray-200'></div>
-						{works
+						{filteredWorks
 							?.sort(
 								(a, b) =>
 									moment(b.date, "DD/MM/YYYY").valueOf() -

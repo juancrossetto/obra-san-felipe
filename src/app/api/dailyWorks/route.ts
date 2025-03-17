@@ -12,6 +12,7 @@ export async function GET() {
             description: dailyWork["Descripcion"],
             isAdditional: dailyWork["Dia Adicional"] ? true : false,
             additionalDescription: dailyWork["Descripcion Adicional"],
+            directedBy: dailyWork["Direccion"],
         }))
 
         return NextResponse.json(formattedDailyWorks)

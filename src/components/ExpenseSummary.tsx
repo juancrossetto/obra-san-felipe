@@ -12,6 +12,7 @@ import { numberToWords } from "@/lib/numberToLetters";
 export default function ExpenseSummary() {
 	const [totalExpenses, setTotalExpenses] = useState(0);
 	const [totalAlexxPayments, setTotalAlexxPayments] = useState(0);
+	const [totalGusPayments, setTotalGusPayments] = useState(0);
 	const [totalOtherPayments, setTotalOtherPayments] = useState(0);
 	const [totalCombined, setTotalCombined] = useState(0);
 	const {
@@ -36,8 +37,17 @@ export default function ExpenseSummary() {
 				?.reduce((sum, payment) => sum + payment.amount, 0); // Asume que `amount` existe en `payments`
 			setTotalAlexxPayments(total);
 
+			const totalGus = payments
+				.filter((p) => p.paidTo?.toLowerCase() === "gustavo")
+				?.reduce((sum, payment) => sum + payment.amount, 0);
+			setTotalGusPayments(totalGus);
+
 			const totalOther = payments
-				.filter((p) => p.paidTo?.toLowerCase() !== "alexx")
+				.filter(
+					(p) =>
+						p.paidTo?.toLowerCase() !== "alexx" &&
+						p.paidTo?.toLowerCase() !== "gustavo"
+				)
 				?.reduce((sum, payment) => sum + payment.amount, 0); // Asume que `amount` existe en `payments`
 			setTotalOtherPayments(totalOther);
 		}
@@ -99,6 +109,14 @@ export default function ExpenseSummary() {
 						<p className='text-muted-foreground'>Otros Pagos</p>
 						<p className='font-medium'>${formatNumber(totalOtherPayments)}</p>
 					</div>
+				</div>
+				<div className='flex justify-between mt-2 text-xs flex-wrap justify-evenly'>
+					<div className='text-center'></div>
+					<div className='text-center'>
+						<p className='text-muted-foreground'>Pagos a Gus</p>
+						<p className='font-medium'>${formatNumber(totalGusPayments)}</p>
+					</div>
+					<div className='text-center'></div>
 				</div>
 			</CardContent>
 		</Card>

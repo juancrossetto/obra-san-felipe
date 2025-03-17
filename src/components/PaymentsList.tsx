@@ -36,7 +36,11 @@ import { Payment } from "@/types";
 import { fetcher, formatNumber } from "@/lib/utils";
 import useSWR from "swr";
 
-export default function PaymentsList() {
+interface PaymentsListProps {
+	directedBy: string;
+}
+
+export default function PaymentsList({ directedBy }: PaymentsListProps) {
 	const {
 		data: payments,
 		error,
@@ -267,11 +271,11 @@ export default function PaymentsList() {
 		</Table>
 	);
 
-	const alexxPayments = (payments || []).filter(
-		(payment) => payment.paidTo === "Alexx"
+	const paymentsByDirected = (payments || []).filter(
+		(payment) => payment.paidTo === directedBy
 	);
 	const otherPayments = (payments || []).filter(
-		(payment) => payment.paidTo !== "Alexx"
+		(payment) => payment.paidTo !== directedBy
 	);
 
 	return (
@@ -340,12 +344,12 @@ export default function PaymentsList() {
 
 			<Card className='mb-6'>
 				<CardHeader>
-					<CardTitle>Pagos a Alexx</CardTitle>
+					<CardTitle>Pagos a {directedBy}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{isDesktop
-						? renderPaymentsTable(alexxPayments)
-						: alexxPayments.map(renderPaymentItem)}
+						? renderPaymentsTable(paymentsByDirected)
+						: paymentsByDirected.map(renderPaymentItem)}
 				</CardContent>
 			</Card>
 

@@ -15,6 +15,12 @@ import WeatherWidget from "@/components/WeatherWidget";
 import TaskList from "@/components/TaskList";
 import UnpaidExpenseWarning from "@/components/UnpaidExpenseWarning";
 import DailyWorksTimeline from "@/components/DailyWorksTimeline";
+import {
+	Accordion,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionContent,
+} from "@/components/ui/accordion";
 
 export default function Home() {
 	const swapyRef = useRef<Swapy | null>(null);
@@ -82,25 +88,52 @@ export default function Home() {
 						<SupplierDebts />
 					</div>
 				</div>
-
-				<div className='mb-8'>
-					<DailyWorksTimeline />
-				</div>
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
-					<DailyExpenseChart />
-					<TaskList />
-				</div>
-
-				<div className='mb-8'>
-					<GanttChart />
-				</div>
+				<Accordion type='single' className='mb-8' collapsible>
+					<AccordionItem value='alexx'>
+						<AccordionTrigger className='text-lg font-semibold'>
+							Sección Alexx
+						</AccordionTrigger>
+						<AccordionContent>
+							<div className='mb-8'>
+								<DailyWorksTimeline directedBy='Alexx' />
+							</div>
+						</AccordionContent>
+						<AccordionContent>
+							<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
+								<DailyExpenseChart />
+								<TaskList />
+							</div>
+						</AccordionContent>
+						<AccordionContent>
+							<div className='mb-8'>
+								<GanttChart />
+							</div>
+						</AccordionContent>
+						<AccordionContent>
+							<div className='mb-8'>
+								<PaymentsList directedBy='Alexx' />
+							</div>
+						</AccordionContent>
+					</AccordionItem>
+					<AccordionItem value='gustavo'>
+					<AccordionTrigger className='text-lg font-semibold'>
+							Sección Gustavo
+						</AccordionTrigger>
+						<AccordionContent>
+							<div className='mb-8'>
+								<DailyWorksTimeline directedBy='Gustavo' />
+							</div>
+						</AccordionContent>
+						<AccordionContent>
+							<div className='mb-8'>
+								<PaymentsList directedBy='Gustavo' />
+							</div>
+						</AccordionContent>
+					</AccordionItem>
+				</Accordion>
 
 				<div className='mb-8'>
 					<ExpenseList />
-				</div>
-
-				<div className='mb-8'>
-					<PaymentsList />
 				</div>
 
 				<div className='mb-8'>

@@ -44,4 +44,5 @@ export interface DailyWork {
     description: string
     isAdditional: string
     additionalDescription: string
+    directedBy: string
 }
