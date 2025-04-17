@@ -54,8 +54,8 @@ export default function ExpenseSummary() {
 	}, [expenses, payments]);
 
 	useEffect(() => {
-		setTotalCombined(totalExpenses + totalAlexxPayments + totalOtherPayments);
-	}, [totalExpenses, totalAlexxPayments, totalOtherPayments]);
+		setTotalCombined(totalExpenses + totalAlexxPayments + totalGusPayments + totalOtherPayments);
+	}, [totalExpenses, totalAlexxPayments, totalGusPayments, totalOtherPayments]);
 
 	if (isLoading || isLoadingPayments) {
 		return (
